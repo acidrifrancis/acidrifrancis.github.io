@@ -1,0 +1,19 @@
+Options -MultiViews
+RewriteEngine On
+
+# Baseline browser security headers; Render terminates public TLS.
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+# Serve real files and directories (CSS, JavaScript, images) directly.
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Send application routes such as /api/* through the PHP front controller.
+RewriteRule ^ index.php [QSA,L]

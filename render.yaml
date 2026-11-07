@@ -1,0 +1,57 @@
+services:
+  - type: web
+    name: northern-uganda-market-connect
+    runtime: docker
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: SESSION_SECURE
+        value: "true"
+      - key: APP_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: PESAPAL_ENVIRONMENT
+        value: sandbox
+      - key: PESAPAL_ENV
+        value: sandbox
+      - key: PESAPAL_CURRENCY
+        value: UGX
+      - key: PESAPAL_CONSUMER_KEY
+        sync: false
+      - key: PESAPAL_CONSUMER_SECRET
+        sync: false
+      - key: PESAPAL_CALLBACK_URL
+        sync: false
+      - key: PESAPAL_NOTIFICATION_ID
+        sync: false
+      - key: PESAPAL_IPN_ID
+        sync: false
+      - key: CRON_SECRET
+        generateValue: true
+
+  - type: cron
+    name: northern-uganda-market-cleanup
+    runtime: docker
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    schedule: "15 0 * * *"
+    startCommand: php /var/www/html/src/cleanup.php
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
